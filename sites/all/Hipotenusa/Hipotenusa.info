@@ -1,0 +1,9 @@
+name = Hipotenusa
+description = Es la mejor encontradora de Hipotenusas de Drupal
+package = Aprendiendo a programar con Drupal
+
+core = 7.x
+php = 5.3
+version = 7.x-1.0-dev
+
+configure = bbb

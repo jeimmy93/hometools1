@@ -1,0 +1,93 @@
+<?php
+
+	/**
+	* Implements hook_menu().
+	*/
+	
+	function Hipotenusa_menu()
+	{
+		$items = array();
+		
+		$items ['admin/config/content/Hipotenusa'] = array						//Ruta donde se ubica el form
+		(
+			'title' => t('Seeker hypotenuses'),									//titulo que se muestra
+			'description' => t('Calculate the hypotenuse from two legs'),				//la descripción
+			'page callback' => 'drupal_get_form',								//para llamar el formulario que se va a mostrar
+			'page arguments' => array('Hipotenusa_admin'), 						//método
+			'access arguments' => array('administer dividing settings'),		//Pra aceder a los permisos
+			'type' => MENU_NORMAL_ITEM,											//tipo de item que se utiliza
+		);
+		
+		return $items;
+	}
+	
+	
+	/**
+	* Implements hook_permission().
+	*/
+
+	function Hipotenusa_permission() 
+	{
+		return array
+		(
+			'administer Hipotenusa settings' => array								//Nombre de la funcion de permisos
+			(
+				'title' => t('Administer Hipotenusa configurations'),				//Titulo a mostrar
+				'restrict access' => false,										//para que toque asignar permisos
+			)
+		);
+	}
+	
+/**
+	* Callback que implementa la página formulario: 
+	*/
+	
+	function Hipotenusa_admin() 													//Método para hacer el formulario
+	{
+		$form = array();
+		
+		$form ['Cateto1']= array 												//Creando y configurando un cuadro de texto
+		(
+			'#type' => 'textfield',												//El tipo de control  (Textfield)
+			'#title' => t('cateto uno'),										//La etiqueta que se muestra
+			'#default_value' => variable_get('8'),								//Valor por defecto
+			'#size' => 20,														//Tamaño del control en pantalla
+			'#maxlength' => 20,													//Maximo de caracteres que se pueden escribir
+			'#description' => t('El primer cateto'),					//La descripción
+			'#required' => true,												//Si el valor es requerido o no
+		);
+		
+		$form ['Cateto2']= array 												//Creando y configurando un cuadro de texto
+		(
+			'#type' => 'textfield',												//El tipo de control (Textfield)
+			'#title' => t('cateto dos'),										//La etiqueta que se muestra
+			'#default_value' => variable_get('8'),								//Valor por defecto
+			'#size' => 20,														//Tamaño del control en pantalla
+			'#maxlength' => 20,													//Maximo de caracteres que se pueden escribir
+			'#description' => t('El segundo cateto'),					//La descripción
+			'#required' => true,												//Si el valor es requerido o no
+		);
+		
+		
+		$form ['submit']= array 												//Creando el Botón
+		(
+			'#type' => 'submit',												//El tipo de control (Botón)
+			'#value' => t('Halle la hipotenusa'),											//El texto que muestra
+		);
+		
+		$form ['#submit'][] = 'Hallador_Hipotenusa';								//El método que invoca
+		
+		return $form;															//Retorna el formulario armado
+	}	
+	
+	
+	
+	function Hallador_Hipotenusa ($form, &$form_state)							//Método de la funcionalidad
+	{
+		$Catetouno = $form_state['values']['Cateto1'];						//Creación de las variables requeridas
+		$Catetodos = $form_state['values']['Cateto2'];
+		
+		$Lahipo = sqrt (($Catetouno*$Catetouno)+($Catetodos*$Catetodos));
+		
+		drupal_set_message("La hipotenusa hallada es: ".($Lahipo));	//Muestra la respuesta
+	}
